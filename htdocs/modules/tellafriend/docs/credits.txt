@@ -1,0 +1,4 @@
+Credits
+===============
+
+Originally developed by GIJoe (http://xoops.peak.ne.jp/)
