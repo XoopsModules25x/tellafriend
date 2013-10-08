@@ -1,0 +1,42 @@
+---------------------------------------
+1.06 Final  2013-05-02
+---------------------------------------
+- Converted to XOOPS 2.5.5 Admin GUI (Mamba)
+
+---------------------------------------
+1.05 2008-12-08
+---------------------------------------
+- updated README
+- updated mymenu
+- added language files
+-- portuguesebr (thx leco1)
+
+---------------------------------------
+1.04 2008-12-05
+---------------------------------------
+- modified the compatibilities with XCL2.1
+- modified MySQL5 compatibility
+- changed altsys friendly module
+
+---------------------------------------
+1.03 2006-07-13
+---------------------------------------
+- modified xoops_version.php as hasMain=1 (thx Rollei)
+- added language files
+-- persian (thx voltan) 1.03a
+
+---------------------------------------
+1.02 2005-12-03
+---------------------------------------
+- updated myblocksadmin 0.41 & mymenu 0.15a
+- updated module icon (thx argon)
+
+---------------------------------------
+1.01   2005-07-21
+---------------------------------------
+- fixed a bug in JavaScript (thx yamaichi)
+
+---------------------------------------
+1.00   2005-05-25
+---------------------------------------
+- the 1st release
