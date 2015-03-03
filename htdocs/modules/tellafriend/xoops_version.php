@@ -25,7 +25,7 @@
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA //
 //  ------------------------------------------------------------------------ //
 if (!defined('XOOPS_ROOT_PATH')) {
-	die('XOOPS root path not defined');
+    die('XOOPS root path not defined');
 }
 $modversion['name']                = _MI_TELLAFRIEND_MODNAME;
 $modversion['version']             = 1.06;
@@ -72,38 +72,36 @@ $modversion['hasMain'] = 1;
 // Config Settings
 $modversion['hasconfig'] = 1;
 
-$modversion['config'][1] = array( 
-	'name'			=> 'max4guest' ,
-	'title'			=> '_MI_TELLAFRIEND_MAX4GUEST' ,
-	'description'	=> '' ,
-	'formtype'		=> 'textbox' ,
-	'valuetype'		=> 'int' ,
-	'default'		=> '5' ,
-	'options'		=> array()
+$modversion['config'][1] = array(
+    'name'            => 'max4guest' ,
+    'title'            => '_MI_TELLAFRIEND_MAX4GUEST' ,
+    'description'    => '' ,
+    'formtype'        => 'textbox' ,
+    'valuetype'        => 'int' ,
+    'default'        => '5' ,
+    'options'        => array()
 ) ;
 
-$modversion['config'][] = array( 
-	'name'			=> 'max4user' ,
-	'title'			=> '_MI_TELLAFRIEND_MAX4USER' ,
-	'description'	=> '' ,
-	'formtype'		=> 'textbox' ,
-	'valuetype'		=> 'int' ,
-	'default'		=> '10' ,
-	'options'		=> array()
+$modversion['config'][] = array(
+    'name'            => 'max4user' ,
+    'title'            => '_MI_TELLAFRIEND_MAX4USER' ,
+    'description'    => '' ,
+    'formtype'        => 'textbox' ,
+    'valuetype'        => 'int' ,
+    'default'        => '10' ,
+    'options'        => array()
 ) ;
 
-$modversion['config'][] = array( 
-	'name'			=> 'can_bodyedit' ,
-	'title'			=> '_MI_TELLAFRIEND_BODYEDIT' ,
-	'description'	=> '' ,
-	'formtype'		=> 'yesno' ,
-	'valuetype'		=> 'int' ,
-	'default'		=> true ,
-	'options'		=> array()
+$modversion['config'][] = array(
+    'name'            => 'can_bodyedit' ,
+    'title'            => '_MI_TELLAFRIEND_BODYEDIT' ,
+    'description'    => '' ,
+    'formtype'        => 'yesno' ,
+    'valuetype'        => 'int' ,
+    'default'        => true ,
+    'options'        => array()
 ) ;
-
 
 // Templates
 $modversion['templates'][1]['file'] = 'tellafriend_form.html';
 $modversion['templates'][1]['description'] = 'Tell a Friend Form';
-?>

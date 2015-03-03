@@ -31,111 +31,109 @@ include "include/gtickets.php";
 $myts =& MyTextSanitizer::getInstance();
 
 /* if( ! is_object( $xoopsUser ) ) {
-	redirect_header( XOOPS_URL . '/user.php' , 3 , _NOPERM ) ;
-	exit ;
+    redirect_header( XOOPS_URL . '/user.php' , 3 , _NOPERM ) ;
+    exit ;
 }*/
 
 if( file_exists( dirname( __FILE__ ) . '/language/' . $xoopsConfig['language'] . '/modinfo.php' ) ) {
-	include_once dirname( __FILE__ ) . '/language/' . $xoopsConfig['language'] . '/modinfo.php' ;
+    include_once dirname( __FILE__ ) . '/language/' . $xoopsConfig['language'] . '/modinfo.php' ;
 } else {
-	include_once dirname( __FILE__ ) . '/language/english/modinfo.php' ;
+    include_once dirname( __FILE__ ) . '/language/english/modinfo.php' ;
 }
-
 
 /******************* MAIL PART **********************/
 if( ! empty($_POST['submit']) ) {
 
-	// Ticket Check
+    // Ticket Check
 /*	if ( ! $xoopsGTicket->check() ) {
-		redirect_header(XOOPS_URL.'/',3,$xoopsGTicket->getErrors());
-	}*/
+        redirect_header(XOOPS_URL.'/',3,$xoopsGTicket->getErrors());
+    }*/
 
-	// anti-spam
-	if( ! is_object( $xoopsUser ) ) {
-		// ip base restriction for guest
-		$result = $xoopsDB->query( "SELECT count(*) FROM ".$xoopsDB->prefix("tellafriend_log")." WHERE ip='{$_SERVER['REMOTE_ADDR']}' AND timestamp > NOW() - INTERVAL 1 DAY" ) ;
-		list( $count ) = $xoopsDB->fetchRow( $result ) ;
-		if( $count >= $xoopsModuleConfig['max4guest'] ) {
-			redirect_header( XOOPS_URL.'/' , 3 , _MI_TELLAFRIEND_TOOMANY ) ;
-			exit ;
-		}
-	} else if( ! $xoopsUser->isAdmin() ) {
-		// uid base restriction for non-admin user
-		$uid = $xoopsUser->getVar( 'uid' ) ;
-		$result = $xoopsDB->query( "SELECT count(*) FROM ".$xoopsDB->prefix("tellafriend_log")." WHERE uid='$uid' AND timestamp > NOW() - INTERVAL 1 DAY" ) ;
-		list( $count ) = $xoopsDB->fetchRow( $result ) ;
-		if( $count >= $xoopsModuleConfig['max4user'] ) {
-			redirect_header( XOOPS_URL.'/' , 3 , _MI_TELLAFRIEND_TOOMANY ) ;
-			exit ;
-		}
-	}
+    // anti-spam
+    if( ! is_object( $xoopsUser ) ) {
+        // ip base restriction for guest
+        $result = $xoopsDB->query( "SELECT count(*) FROM ".$xoopsDB->prefix("tellafriend_log")." WHERE ip='{$_SERVER['REMOTE_ADDR']}' AND timestamp > NOW() - INTERVAL 1 DAY" ) ;
+        list( $count ) = $xoopsDB->fetchRow( $result ) ;
+        if( $count >= $xoopsModuleConfig['max4guest'] ) {
+            redirect_header( XOOPS_URL.'/' , 3 , _MI_TELLAFRIEND_TOOMANY ) ;
+            exit ;
+        }
+    } else if( ! $xoopsUser->isAdmin() ) {
+        // uid base restriction for non-admin user
+        $uid = $xoopsUser->getVar( 'uid' ) ;
+        $result = $xoopsDB->query( "SELECT count(*) FROM ".$xoopsDB->prefix("tellafriend_log")." WHERE uid='$uid' AND timestamp > NOW() - INTERVAL 1 DAY" ) ;
+        list( $count ) = $xoopsDB->fetchRow( $result ) ;
+        if( $count >= $xoopsModuleConfig['max4user'] ) {
+            redirect_header( XOOPS_URL.'/' , 3 , _MI_TELLAFRIEND_TOOMANY ) ;
+            exit ;
+        }
+    }
 
-	$redirect_uri = ! empty( $_SESSION['tellafriend_referer'] ) && stristr( $_SESSION['tellafriend_referer'] , XOOPS_URL ) ? $_SESSION['tellafriend_referer'] : XOOPS_URL."/index.php" ;
-	unset( $_SESSION['tellafriend_referer'] ) ;
+    $redirect_uri = ! empty( $_SESSION['tellafriend_referer'] ) && stristr( $_SESSION['tellafriend_referer'] , XOOPS_URL ) ? $_SESSION['tellafriend_referer'] : XOOPS_URL."/index.php" ;
+    unset( $_SESSION['tellafriend_referer'] ) ;
 
-	if( is_object( $xoopsUser ) ) {
-		$users_name = $xoopsUser->getVar("uname") ;
-		$users_email = $xoopsUser->getVar("email") ;
-		$users_subject = xoops_substr( $myts->stripSlashesGPC($_POST['usersSubject']) , 0 , 200 , '' ) ;
-		$uid = $xoopsUser->getVar( 'uid' ) ;
-	} else {
-		$users_name = xoops_substr( $myts->stripSlashesGPC($_POST['fromName']) , 0 , 200 , '' ) ;
-		$users_email = xoops_substr( $myts->stripSlashesGPC($_POST['fromEmail']) , 0 , 200 , '' ) ;
-		$users_subject = $_SESSION['usersSubject'] ;
-		unset( $_SESSION['usersSubject'] ) ;
-		// check if from_email is valid as an email address
-		if( ! preg_match( '/^[\w\-\.]+\@[\w\-]+\.[\w\-\.]+$/' , $users_email ) ) {
-			redirect_header( $redirect_uri , 3 , _MI_TELLAFRIEND_INVALIDMAILFROM ) ;
-			exit ;
-		}
-		$uid = 0 ;
-	}
+    if( is_object( $xoopsUser ) ) {
+        $users_name = $xoopsUser->getVar("uname") ;
+        $users_email = $xoopsUser->getVar("email") ;
+        $users_subject = xoops_substr( $myts->stripSlashesGPC($_POST['usersSubject']) , 0 , 200 , '' ) ;
+        $uid = $xoopsUser->getVar( 'uid' ) ;
+    } else {
+        $users_name = xoops_substr( $myts->stripSlashesGPC($_POST['fromName']) , 0 , 200 , '' ) ;
+        $users_email = xoops_substr( $myts->stripSlashesGPC($_POST['fromEmail']) , 0 , 200 , '' ) ;
+        $users_subject = $_SESSION['usersSubject'] ;
+        unset( $_SESSION['usersSubject'] ) ;
+        // check if from_email is valid as an email address
+        if( ! preg_match( '/^[\w\-\.]+\@[\w\-]+\.[\w\-\.]+$/' , $users_email ) ) {
+            redirect_header( $redirect_uri , 3 , _MI_TELLAFRIEND_INVALIDMAILFROM ) ;
+            exit ;
+        }
+        $uid = 0 ;
+    }
 
-	$users_to = xoops_substr( $myts->stripSlashesGPC($_POST['usersTo']) , 0 , 200 , '' ) ;
-	$users_comments = xoops_substr( $myts->stripSlashesGPC($_POST['usersComments']) , 0 , 4096 , '' ) ;
+    $users_to = xoops_substr( $myts->stripSlashesGPC($_POST['usersTo']) , 0 , 200 , '' ) ;
+    $users_comments = xoops_substr( $myts->stripSlashesGPC($_POST['usersComments']) , 0 , 4096 , '' ) ;
 
-	// check if users_to is valid as an email address
-	if( ! preg_match( '/^[\w\-\.]+\@[\w\-]+\.[\w\-\.]+$/' , $users_to ) ) {
-		redirect_header( $redirect_uri , 3 , _MI_TELLAFRIEND_INVALIDMAILTO ) ;
-		exit ;
-	}
+    // check if users_to is valid as an email address
+    if( ! preg_match( '/^[\w\-\.]+\@[\w\-]+\.[\w\-\.]+$/' , $users_to ) ) {
+        redirect_header( $redirect_uri , 3 , _MI_TELLAFRIEND_INVALIDMAILTO ) ;
+        exit ;
+    }
 
-	$message_body = sprintf(_MI_TELLAFRIEND_MAILBODYNAME,$users_name);
-	$message_body .= "---------------\n\n";
-	$message_body .= "$users_comments\n\n";
-	$message_body .= "---------------\n";
-	$message_body .= "{$xoopsConfig['sitename']} ".XOOPS_URL."/\n\n";
-	if( ! is_object( $xoopsUser ) ) $message_body .= "Sender IP: {$_SERVER['REMOTE_ADDR']}";
+    $message_body = sprintf(_MI_TELLAFRIEND_MAILBODYNAME,$users_name);
+    $message_body .= "---------------\n\n";
+    $message_body .= "$users_comments\n\n";
+    $message_body .= "---------------\n";
+    $message_body .= "{$xoopsConfig['sitename']} ".XOOPS_URL."/\n\n";
+    if( ! is_object( $xoopsUser ) ) $message_body .= "Sender IP: {$_SERVER['REMOTE_ADDR']}";
 
-	$xoopsMailer =& getMailer();
-	$xoopsMailer->useMail();
-	$xoopsMailer->setToEmails($users_to);
-	$xoopsMailer->setFromEmail($users_email);
-	$xoopsMailer->setFromName($users_name);
-	$xoopsMailer->setSubject($users_subject);
-	$xoopsMailer->setBody($message_body);
-	$send_result = $xoopsMailer->send();
+    $xoopsMailer =& getMailer();
+    $xoopsMailer->useMail();
+    $xoopsMailer->setToEmails($users_to);
+    $xoopsMailer->setFromEmail($users_email);
+    $xoopsMailer->setFromName($users_name);
+    $xoopsMailer->setSubject($users_subject);
+    $xoopsMailer->setBody($message_body);
+    $send_result = $xoopsMailer->send();
 
-	if( $send_result ) {
-		$xoopsDB->query(
-			"INSERT INTO ".$xoopsDB->prefix("tellafriend_log")." SET "
-			."uid='$uid',"
-			."ip='{$_SERVER['REMOTE_ADDR']}',"
-			."mail_fromname='".addslashes( $users_name )."',"
-			."mail_fromemail='".addslashes( $users_email )."',"
-			."mail_to='".addslashes( $users_to )."',"
-			."mail_subject='".addslashes( $users_subject )."',"
-			."mail_body='".addslashes( $message_body )."',"
-			."agent='".addslashes( $_SERVER['HTTP_USER_AGENT'] )."'"
-		) ;
-		redirect_header( $redirect_uri , 1 , _MI_TELLAFRIEND_MESSAGESENT ) ;
-	} else {
-		redirect_header( $redirect_uri , 3 , _MI_TELLAFRIEND_SENDERROR ) ;
-	}
+    if( $send_result ) {
+        $xoopsDB->query(
+            "INSERT INTO ".$xoopsDB->prefix("tellafriend_log")." SET "
+            ."uid='$uid',"
+            ."ip='{$_SERVER['REMOTE_ADDR']}',"
+            ."mail_fromname='".addslashes( $users_name )."',"
+            ."mail_fromemail='".addslashes( $users_email )."',"
+            ."mail_to='".addslashes( $users_to )."',"
+            ."mail_subject='".addslashes( $users_subject )."',"
+            ."mail_body='".addslashes( $message_body )."',"
+            ."agent='".addslashes( $_SERVER['HTTP_USER_AGENT'] )."'"
+        ) ;
+        redirect_header( $redirect_uri , 1 , _MI_TELLAFRIEND_MESSAGESENT ) ;
+    } else {
+        redirect_header( $redirect_uri , 3 , _MI_TELLAFRIEND_SENDERROR ) ;
+    }
 
-	exit ;
+    exit ;
 }
-
 
 /******************* FORM PART **********************/
 
@@ -153,12 +151,12 @@ $comment = empty( $_GET['target_uri'] ) ? '' : sprintf( _MI_TELLAFRIEND_DEFAULTB
 $comment4show = htmlspecialchars( $comment , ENT_QUOTES ) ;
 
 if( ! is_object( $xoopsUser ) ) {
-	$fromname_text = new XoopsFormText( _MI_TELLAFRIEND_FORMTHFROMNAME , "fromName" , 30 , 100 , '' ) ;
-	$fromemail_text = new XoopsFormText( _MI_TELLAFRIEND_FORMTHFROMEMAIL , "fromEmail" , 40 , 100 , '' ) ;
-	$_SESSION['usersSubject'] = $subject ;
-	$subject_text = new XoopsFormLabel( _MI_TELLAFRIEND_FORMTHSUBJ , $subject4show ) ;
+    $fromname_text = new XoopsFormText( _MI_TELLAFRIEND_FORMTHFROMNAME , "fromName" , 30 , 100 , '' ) ;
+    $fromemail_text = new XoopsFormText( _MI_TELLAFRIEND_FORMTHFROMEMAIL , "fromEmail" , 40 , 100 , '' ) ;
+    $_SESSION['usersSubject'] = $subject ;
+    $subject_text = new XoopsFormLabel( _MI_TELLAFRIEND_FORMTHSUBJ , $subject4show ) ;
 } else {
-	$subject_text = new XoopsFormText( _MI_TELLAFRIEND_FORMTHSUBJ , "usersSubject", 50, 100 , $subject4show ) ;
+    $subject_text = new XoopsFormText( _MI_TELLAFRIEND_FORMTHSUBJ , "usersSubject", 50, 100 , $subject4show ) ;
 }
 
 $to_text = new XoopsFormText( _MI_TELLAFRIEND_FORMTHTO , "usersTo", 40, 100, '');
@@ -170,27 +168,22 @@ $comment_textarea = new XoopsFormTextArea( _MI_TELLAFRIEND_FORMTHBODY , "usersCo
 $ticket_hidden = $xoopsGTicket->getTicketXoopsForm( __LINE__ ) ;
 $submit_button = new XoopsFormButton( "" , "submit" , _MI_TELLAFRIEND_BUTTONSEND , "submit" ) ;
 
-
 $contact_form = new XoopsThemeForm( _MI_TELLAFRIEND_FORMTITLE , "tf_form" , "index.php" ) ;
 $contact_form->addElement($to_text, true);
 
 if( ! is_object( $xoopsUser ) ) {
-	$contact_form->addElement($fromname_text, true);
-	$contact_form->addElement($fromemail_text, true);
+    $contact_form->addElement($fromname_text, true);
+    $contact_form->addElement($fromemail_text, true);
 }
 
 $contact_form->addElement($subject_text);
 if( $xoopsModuleConfig['can_bodyedit'] ) {
-	$contact_form->addElement($comment_textarea, true);
+    $contact_form->addElement($comment_textarea, true);
 } else {
-	$contact_form->addElement($body_label);
-	$contact_form->addElement($body_hidden);
+    $contact_form->addElement($body_label);
+    $contact_form->addElement($body_hidden);
 }
 $contact_form->addElement($ticket_hidden);
 $contact_form->addElement($submit_button);
 $contact_form->assign($xoopsTpl);
 include XOOPS_ROOT_PATH."/footer.php";
-
-
-
-?>

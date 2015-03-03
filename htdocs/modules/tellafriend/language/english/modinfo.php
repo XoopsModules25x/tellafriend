@@ -28,5 +28,3 @@ define( "_MI_TELLAFRIEND_TOOMANY" , "Too many mails you've sent, today" ) ;
 
 define( "_MI_TELLAFRIEND_LOG" , "Log Admin" ) ;
 define( "_MI_TELLAFRIEND_GROUPADMIN" , "Group admin" ) ;
-
-?>
