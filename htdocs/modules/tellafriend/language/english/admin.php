@@ -18,5 +18,3 @@ define( "_AM_LABEL_REMOVE" , "Remove the records checked:" ) ;
 define( "_AM_BUTTON_REMOVE" , "Remove!" ) ;
 define( "_AM_JS_REMOVECONFIRM" , "Remove OK?" ) ;
 define( "_AM_MSG_REMOVED" , "Records are removed" ) ;
-
-?>

@@ -6,21 +6,21 @@ define( '_MYMENU_CONSTANT_IN_MODINFO' , '_MI_TELLAFRIEND_MODNAME' ) ;
 
 // branch for altsys
 if( defined( 'XOOPS_TRUST_PATH' ) && ! empty( $_GET['lib'] ) ) {
-	$mydirname = basename( dirname( dirname( __FILE__ ) ) ) ;
-	$mydirpath = dirname( dirname( __FILE__ ) ) ;
+    $mydirname = basename( dirname( dirname( __FILE__ ) ) ) ;
+    $mydirpath = dirname( dirname( __FILE__ ) ) ;
 
-	// common libs (eg. altsys)
-	$lib = preg_replace( '/[^a-zA-Z0-9_-]/' , '' , $_GET['lib'] ) ;
-	$page = preg_replace( '/[^a-zA-Z0-9_-]/' , '' , @$_GET['page'] ) ;
+    // common libs (eg. altsys)
+    $lib = preg_replace( '/[^a-zA-Z0-9_-]/' , '' , $_GET['lib'] ) ;
+    $page = preg_replace( '/[^a-zA-Z0-9_-]/' , '' , @$_GET['page'] ) ;
 
-	if( file_exists( XOOPS_TRUST_PATH.'/libs/'.$lib.'/'.$page.'.php' ) ) {
-		include XOOPS_TRUST_PATH.'/libs/'.$lib.'/'.$page.'.php' ;
-	} else if( file_exists( XOOPS_TRUST_PATH.'/libs/'.$lib.'/index.php' ) ) {
-		include XOOPS_TRUST_PATH.'/libs/'.$lib.'/index.php' ;
-	} else {
-		die( 'wrong request' ) ;
-	}
-	exit ;
+    if( file_exists( XOOPS_TRUST_PATH.'/libs/'.$lib.'/'.$page.'.php' ) ) {
+        include XOOPS_TRUST_PATH.'/libs/'.$lib.'/'.$page.'.php' ;
+    } else if( file_exists( XOOPS_TRUST_PATH.'/libs/'.$lib.'/index.php' ) ) {
+        include XOOPS_TRUST_PATH.'/libs/'.$lib.'/index.php' ;
+    } else {
+        die( 'wrong request' ) ;
+    }
+    exit ;
 }
 
 // GET vars
@@ -30,25 +30,23 @@ $num = empty( $_GET[ 'num' ] ) ? 20 : intval( $_GET[ 'num' ] ) ;
 // Table Name
 $log_table = $xoopsDB->prefix( "tellafriend_log" ) ;
 
-
 // UPDATE stage
 if( ! empty( $_POST['action'] ) ) {
-	if( $_POST['action'] == 'delete' && isset( $_POST['ids'] ) && is_array( $_POST['ids'] ) ) {
-		// Ticket check
-		if ( ! $xoopsGTicket->check() ) {
-			redirect_header(XOOPS_URL.'/',3,$xoopsGTicket->getErrors());
-		}
+    if( $_POST['action'] == 'delete' && isset( $_POST['ids'] ) && is_array( $_POST['ids'] ) ) {
+        // Ticket check
+        if ( ! $xoopsGTicket->check() ) {
+            redirect_header(XOOPS_URL.'/',3,$xoopsGTicket->getErrors());
+        }
 
-		// remove records
-		foreach( $_POST['ids'] as $lid ) {
-			$lid = intval( $lid ) ;
-			$xoopsDB->query( "DELETE FROM $log_table WHERE lid='$lid'" ) ;
-		}
-		redirect_header( "main.php" , 2 , _AM_MSG_REMOVED ) ;
-		exit ;
-	}
+        // remove records
+        foreach( $_POST['ids'] as $lid ) {
+            $lid = intval( $lid ) ;
+            $xoopsDB->query( "DELETE FROM $log_table WHERE lid='$lid'" ) ;
+        }
+        redirect_header( "main.php" , 2 , _AM_MSG_REMOVED ) ;
+        exit ;
+    }
 }
-
 
 // query for listing
 $rs = $xoopsDB->query( "SELECT count(lid) FROM $log_table" ) ;
@@ -59,7 +57,6 @@ $prs = $xoopsDB->query( "SELECT l.lid, l.uid, l.ip, l.agent, l.mail_fromemail, l
 require_once XOOPS_ROOT_PATH.'/class/pagenav.php' ;
 $nav = new XoopsPageNav( $numrows , $num , $pos , 'pos' , "num=$num" ) ;
 $nav_html = $nav->renderNav( 10 ) ;
-
 
 // beggining of Output
 xoops_cp_header();
@@ -79,7 +76,7 @@ if( ! is_object( $xoopsModule ) ) redirect_header( XOOPS_URL.'/user.php' , 1 , _
 echo "
 <table width='95%' border='0' cellpadding='4' cellspacing='0'><tr><td>
 <form action='' method='GET' style='margin-bottom:0px;text-align:right'>
-  $nav_html &nbsp; 
+  $nav_html &nbsp;
 </form>
 <form name='MainForm' action='' method='POST' style='margin-top:0px;'>
 ".$xoopsGTicket->getTicketHtml(__LINE__)."
@@ -98,26 +95,26 @@ echo "
 // body of log listing
 $oddeven = 'odd' ;
 while( list( $lid , $uid , $ip , $agent , $mail_fromemail , $mail_to , $timestamp , $uname ) = $xoopsDB->fetchRow( $prs ) ) {
-	$oddeven = ( $oddeven == 'odd' ? 'even' : 'odd' ) ;
+    $oddeven = ( $oddeven == 'odd' ? 'even' : 'odd' ) ;
 
-	$ip = htmlspecialchars( $ip , ENT_QUOTES ) ;
-	$mail_fromemail = htmlspecialchars( $mail_fromemail , ENT_QUOTES ) ;
-	$mail_to = htmlspecialchars( $mail_to , ENT_QUOTES ) ;
-	$uname = htmlspecialchars( ( $uid ? $uname : _GUESTS ) , ENT_QUOTES ) ;
+    $ip = htmlspecialchars( $ip , ENT_QUOTES ) ;
+    $mail_fromemail = htmlspecialchars( $mail_fromemail , ENT_QUOTES ) ;
+    $mail_to = htmlspecialchars( $mail_to , ENT_QUOTES ) ;
+    $uname = htmlspecialchars( ( $uid ? $uname : _GUESTS ) , ENT_QUOTES ) ;
 
-	// make agent shorten
-	if( preg_match( '/MSIE\s+([0-9.]+)/' , $agent , $regs ) ) {
-		$agent_short = 'IE ' . $regs[1] ;
-	} else if( stristr( $agent , 'Gecko' ) !== false ) {
-		$agent_short = strrchr( $agent , ' ' ) ;
-	} else {
-		$agent_short = substr( $agent , 0 , strpos( $agent , ' ' ) ) ;
-	}
+    // make agent shorten
+    if( preg_match( '/MSIE\s+([0-9.]+)/' , $agent , $regs ) ) {
+        $agent_short = 'IE ' . $regs[1] ;
+    } else if( stristr( $agent , 'Gecko' ) !== false ) {
+        $agent_short = strrchr( $agent , ' ' ) ;
+    } else {
+        $agent_short = substr( $agent , 0 , strpos( $agent , ' ' ) ) ;
+    }
 
-	$agent4disp = htmlspecialchars( $agent , ENT_QUOTES ) ;
-	$agent_desc = $agent == $agent_short ? $agent4disp : htmlspecialchars( $agent_short , ENT_QUOTES ) . "<img src='../images/dotdotdot.gif' alt='$agent4disp' title='$agent4disp' />" ;
+    $agent4disp = htmlspecialchars( $agent , ENT_QUOTES ) ;
+    $agent_desc = $agent == $agent_short ? $agent4disp : htmlspecialchars( $agent_short , ENT_QUOTES ) . "<img src='../images/dotdotdot.gif' alt='$agent4disp' title='$agent4disp' />" ;
 
-	echo "
+    echo "
   <tr>
     <td class='$oddeven'><input type='checkbox' name='ids[]' value='$lid' /></td>
     <td class='$oddeven'>".formatTimestamp($timestamp)."</td>
