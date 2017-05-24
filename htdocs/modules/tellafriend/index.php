@@ -28,7 +28,7 @@
 include "../../mainfile.php";
 include "include/gtickets.php";
 
-$myts =& MyTextSanitizer::getInstance();
+$myts = MyTextSanitizer::getInstance();
 
 /* if( ! is_object( $xoopsUser ) ) {
     redirect_header( XOOPS_URL . '/user.php' , 3 , _NOPERM ) ;
